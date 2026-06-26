@@ -1,0 +1,25 @@
+# Context exclusion: keep secrets, build output and local IDE state out of AI indexing.
+.env
+.env.*
+*.jks
+*.keystore
+keystore.properties
+*.p12
+*.pfx
+*.pem
+*.key
+*.mobileprovision
+*.provisionprofile
+google-services.json
+GoogleService-Info.plist
+xcuserdata/
+*.xcuserstate
+DerivedData/
+Pods/
+.build/
+.swiftpm/
+.gradle/
+build/
+.idea/
+.cxx/
+local.properties

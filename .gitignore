@@ -1,0 +1,82 @@
+# ---- OS / editors / archives / logs ----
+.DS_Store
+._*
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+*.log
+*.tmp
+*.bak
+*.swp
+*.zip
+*.tar
+*.tar.gz
+*.tgz
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+
+# ---- IDE state (Android Studio / IntelliJ) ----
+.idea/
+*.iml
+
+# ---- iOS / Xcode / SwiftPM ----
+xcuserdata/
+*.xcuserstate
+*.xcscmblueprint
+*.xccheckout
+*.moved-aside
+*.hmap
+*.ipa
+*.dSYM
+*.dSYM.zip
+DerivedData/
+.build/
+.swiftpm/
+Pods/
+# NOTE: commit Package.resolved (apps need reproducible dependency versions)
+
+# ---- Android / Gradle ----
+.gradle/
+build/
+local.properties
+captures/
+.cxx/
+*.apk
+*.aab
+*.ap_
+*.dex
+*.hprof
+
+# ---- Python / Node (harness scripts) ----
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.venv/
+venv/
+node_modules/
+
+# ---- Secrets and signing material (never commit) ----
+.env
+.env.*
+!.env.example
+*.jks
+*.keystore
+keystore.properties
+*.p12
+*.pfx
+*.cer
+*.crt
+*.der
+*.pem
+*.key
+*.mobileprovision
+*.provisionprofile
+# Remove the next two lines if your team commits Firebase client config deliberately.
+google-services.json
+GoogleService-Info.plist
+
+# ---- Local AI tool state ----
+.claude/settings.local.json
