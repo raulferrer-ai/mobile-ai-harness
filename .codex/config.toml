@@ -1,0 +1,7 @@
+# Codex CLI / IDE project configuration.
+# AGENTS.md is read natively; platform contracts are discovered by directory.
+approval_policy = "on-request"
+sandbox_mode = "workspace-write"
+project_doc_fallback_filenames = ["AGENTS.md"]
+# Gradle dependency downloads and simulators may need relaxed sandboxing; change this
+# deliberately (and document it in docs/decisions/) rather than silently.
