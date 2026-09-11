@@ -1,0 +1,45 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(.agents/**)",
+      "Read(docs/**)",
+      "Read(features/**)",
+      "Read(progress/**)",
+      "Read(android/AGENTS.md)",
+      "Read(ios/AGENTS.md)",
+      "Bash(make *)",
+      "Bash(python3 scripts/*)",
+      "Bash(sh scripts/*)",
+      "Bash(git status*)",
+      "Bash(git diff*)",
+      "Bash(git log*)"
+    ],
+    "deny": [
+      "Read(.env*)",
+      "Read(**/*.jks)",
+      "Read(**/*.keystore)",
+      "Read(**/*.p12)",
+      "Read(**/*.pem)",
+      "Read(**/*.mobileprovision)",
+      "Edit(./feature_list.json)",
+      "Bash(python3 scripts/feature.py done*)",
+      "Bash(rm -rf *)",
+      "Bash(git reset --hard*)",
+      "Bash(git push --force*)",
+      "Bash(git push -f*)",
+      "Bash(git clean -f*)"
+    ]
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [{ "type": "command", "command": "python3 .agents/hooks/block-destructive.py" }]
+      },
+      {
+        "matcher": "Edit|Write|MultiEdit",
+        "hooks": [{ "type": "command", "command": "python3 .agents/hooks/guard-sensitive-paths.py" }]
+      }
+    ]
+  }
+}
