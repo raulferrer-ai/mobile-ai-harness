@@ -1,0 +1,92 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  harness:
+    name: Harness integrity
+    runs-on: ubuntu-latest
+    env:
+      PYTHONDONTWRITEBYTECODE: "1"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Validate structure, schemas, links and budgets
+        run: make validate-harness
+      - name: Harness unit tests
+        run: make test-harness
+      - name: Forbidden IDE/OS artifacts
+        run: |
+          if find . -path ./.git -prune -o \( -name '*.xcuserstate' -o -name '.DS_Store' -o -name 'Thumbs.db' \) -print | grep -q .; then
+            echo "Forbidden IDE/OS state files found"; exit 1
+          fi
+
+  security:
+    name: Secret scan and dependency review
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Secret and forbidden-file scan
+        run: make scan-secrets
+      # Dependency review needs the dependency graph (private repos: GitHub Advanced Security).
+      # Pin third-party actions to a commit SHA if your organization requires it.
+      - name: Dependency review (pull requests)
+        if: github.event_name == 'pull_request'
+        uses: actions/dependency-review-action@v4
+
+  android:
+    name: Android sensor
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Detect Android project
+        id: detect
+        run: |
+          if [ -f android/gradlew ]; then echo "present=true" >> "$GITHUB_OUTPUT"; else echo "No android/gradlew yet; skipping."; fi
+      - uses: actions/setup-java@v4
+        if: steps.detect.outputs.present == 'true'
+        with:
+          distribution: temurin
+          java-version: "17" # keep in sync with MIN_JDK in harness.env
+      - uses: gradle/actions/setup-gradle@v4
+        if: steps.detect.outputs.present == 'true'
+      - name: Android unit tests
+        if: steps.detect.outputs.present == 'true'
+        run: make sensor-android
+
+  ios:
+    name: iOS build
+    runs-on: macos-26
+    steps:
+      - uses: actions/checkout@v4
+      - name: Detect iOS project
+        id: detect
+        run: |
+          . ./harness.env
+          if [ -d "$IOS_PROJECT" ]; then echo "present=true" >> "$GITHUB_OUTPUT"; else echo "No $IOS_PROJECT yet; skipping."; fi
+      - name: Show Xcode version and simulators
+        if: steps.detect.outputs.present == 'true'
+        run: |
+          xcodebuild -version
+          xcrun simctl list devices available
+          # To pin an Xcode version, add an xcode-select step after checking: ls /Applications | grep Xcode
+      - name: Build (no signing)
+        if: steps.detect.outputs.present == 'true'
+        run: make build-ios
+      # To run tests in CI too, replace the build step with: make sensor-ios
+      # (set IOS_DESTINATION in harness.env to a simulator that exists on the runner).
