@@ -1,0 +1,18 @@
+# Dependency update PRs. The GitHub Actions ecosystem works from day one.
+# Uncomment the others after you create the native projects (Dependabot needs a manifest in the directory).
+version: 2
+updates:
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+
+  # - package-ecosystem: "gradle"
+  #   directory: "/android"
+  #   schedule:
+  #     interval: "weekly"
+  #
+  # - package-ecosystem: "swift"       # Swift Package Manager; check support for your Xcode-project layout
+  #   directory: "/ios"
+  #   schedule:
+  #     interval: "weekly"

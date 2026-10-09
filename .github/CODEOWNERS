@@ -1,0 +1,29 @@
+# Code owners: reviews are requested automatically and, with branch protection ("Require review from Code Owners"),
+# required. Replace the placeholders with your real teams. The last matching pattern wins.
+
+# Default owner
+*                         @your-org/mobile-leads
+
+# Platform code
+/ios/                     @your-org/ios-team
+/android/                 @your-org/android-team
+
+# The harness is the control system: changes to it need an explicit decision
+/AGENTS.md                @your-org/mobile-leads @your-org/ai-governance
+/ios/AGENTS.md            @your-org/mobile-leads @your-org/ai-governance
+/android/AGENTS.md        @your-org/mobile-leads @your-org/ai-governance
+/harness.env              @your-org/mobile-leads
+/scripts/                 @your-org/mobile-leads
+/.agents/                 @your-org/mobile-leads @your-org/ai-governance
+/.claude/                 @your-org/ai-governance
+/.codex/                  @your-org/ai-governance
+/.cursor/                 @your-org/ai-governance
+/.opencode/               @your-org/ai-governance
+/.github/                 @your-org/mobile-leads @your-org/security
+/docs/decisions/          @your-org/mobile-leads
+
+# Security and compliance documents
+/SECURITY.md              @your-org/security
+/docs/security.md         @your-org/security
+/docs/privacy-compliance.md @your-org/security @your-org/privacy
+/docs/ai-governance.md    @your-org/ai-governance @your-org/security
