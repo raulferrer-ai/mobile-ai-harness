@@ -63,7 +63,7 @@ jobs:
         with:
           distribution: temurin
           java-version: "17" # keep in sync with MIN_JDK in harness.env
-      - uses: gradle/actions/setup-gradle@v4
+      - uses: gradle/actions/setup-gradle@v6
         if: steps.detect.outputs.present == 'true'
       - name: Android unit tests
         if: steps.detect.outputs.present == 'true'
