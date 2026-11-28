@@ -78,6 +78,8 @@ Tests must exercise public command/script entry points where possible, not only 
 - Test output identifies the attempted bypass and expected rejection.
 - No test treats a prompt or agent instruction as a security boundary.
 
+**Status:** Test cases authored in `scripts/tests/test_ic002_adversarial.py`. Five security expectations are marked as expected failures to expose current bypasses without making the baseline suite fail; the direct workspace-write probe records the local trust-boundary limitation. Execution has not yet been performed, so IC-002 remains in progress.
+
 ### IC-003 — Document the current trust boundary
 
 **Priority:** P0  
