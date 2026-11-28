@@ -113,5 +113,73 @@ class FeatureCli(unittest.TestCase):
         self.assertEqual(self.run_cli("validate").returncode, 0)
 
 
+    # IC-002 adversarial probes.
+    # These tests intentionally capture currently accepted bypasses. They should be
+    # inverted to assert rejection when the corresponding hardening task is implemented.
+
+    def test_attack_direct_record_sensor_without_running_check_is_accepted(self):
+        """A caller can manufacture sensor_green by invoking the record-only CLI."""
+        self.add_and_start()
+        r = self.run_cli("record-sensor", "ios")
+        self.assertEqual(r.returncode, 0, r.stderr)
+        feat = self.board()["features"][0]
+        self.assertEqual(feat["platforms"]["ios"], "sensor_green")
+        self.assertEqual(feat["sensors"]["ios"]["mode"], "test")
+
+    def test_attack_gate_accepts_caller_claims_without_sensor_records(self):
+        """Gate trusts --sensors even when no sensor execution metadata exists."""
+        self.add_and_start()
+        r = self.run_cli("gate", "alpha", "--sensors", "ios,android")
+        self.assertEqual(r.returncode, 0, r.stderr)
+        feat = self.board()["features"][0]
+        self.assertEqual(feat["gate"]["sensors"], ["android", "ios"])
+        self.assertNotIn("sensors", feat)
+
+    def test_attack_gate_accepts_unconfigured_sensor_name(self):
+        """A caller can add an arbitrary sensor name to the Gate payload."""
+        self.add_and_start()
+        r = self.run_cli("gate", "alpha", "--sensors", "ios,android,ghost")
+        self.assertEqual(r.returncode, 0, r.stderr)
+        feat = self.board()["features"][0]
+        self.assertIn("ghost", feat["gate"]["sensors"])
+
+    def test_attack_untrusted_process_can_edit_authoritative_board(self):
+        """Workspace write access bypasses the CLI and editor-only hook."""
+        self.add_and_start()
+        code = (
+            "import json; from pathlib import Path; "
+            "p=Path('feature_list.json'); d=json.loads(p.read_text()); "
+            "d['features'][0]['title']='tampered outside CLI'; "
+            "p.write_text(json.dumps(d))"
+        )
+        r = subprocess.run([sys.executable, "-c", code], cwd=self.tmp, capture_output=True, text=True)
+        self.assertEqual(r.returncode, 0, r.stderr)
+        self.assertEqual(self.board()["features"][0]["title"], "tampered outside CLI")
+
+    def test_attack_gate_and_completion_accept_results_after_spec_changes(self):
+        """A passing result is not bound to the source/spec snapshot."""
+        self.add_and_start()
+        self.assertEqual(self.run_cli("record-sensor", "ios").returncode, 0)
+        self.assertEqual(self.run_cli("record-sensor", "android").returncode, 0)
+        spec = self.tmp / "features" / "a.feature"
+        spec.write_text(SPEC + "\\n  # changed after sensor recording\\n", encoding="utf-8")
+        self.assertEqual(self.run_cli("gate", "alpha", "--sensors", "ios,android").returncode, 0)
+        done = self.run_cli("done", "alpha", "--human-checklist-ok")
+        self.assertEqual(done.returncode, 0, done.stderr)
+        self.assertEqual(self.board()["features"][0]["status"], "done")
+
+    def test_attack_completion_flag_is_accepted_without_authenticated_human(self):
+        """The CLI accepts the same boolean flag regardless of who invokes it."""
+        self.add_and_start()
+        self.run_cli("record-sensor", "ios")
+        self.run_cli("record-sensor", "android")
+        self.assertEqual(self.run_cli("gate", "alpha", "--sensors", "ios,android").returncode, 0)
+        done = self.run_cli("done", "alpha", "--human-checklist-ok")
+        self.assertEqual(done.returncode, 0, done.stderr)
+        feat = self.board()["features"][0]
+        self.assertEqual(feat["status"], "done")
+        self.assertTrue(feat["verified"])
+
+
 if __name__ == "__main__":
     unittest.main()
