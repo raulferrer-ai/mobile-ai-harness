@@ -6,7 +6,7 @@ This roadmap turns the [Architecture](architecture.md), [Domain Model](domain-mo
 
 The objective is not to extract abstractions as quickly as possible. It is to establish trustworthy workflow behavior in the existing harness, then extract the smallest reusable Core that the implementation has demonstrated it needs.
 
-All work described here is performed on the \`feat/engineering-core\` branch until a separately reviewed integration decision is made.
+All work described here is performed on the `feat/engineering-core` branch until a separately reviewed integration decision is made.
 
 ## 2. Delivery principles
 
@@ -36,7 +36,7 @@ A task is complete only when its acceptance criteria are met and the relevant ev
 
 Trace every code path that can create, update, read, or invalidate:
 
-- Sensor results and \`sensor_green\` state.
+- Sensor results and `sensor_green` state.
 - Feature/work-item state.
 - Gate results.
 - Human completion flags.
@@ -421,7 +421,7 @@ Evaluate whether real usage justifies isolated remote runners, centralized persi
 
 The critical path is:
 
-\`\`\`mermaid
+```mermaid
 flowchart TD
     A[IC-001 State-path inventory] --> B[IC-002 Adversarial tests]
     B --> C[IC-010 Trusted sensor execution]
@@ -437,7 +437,7 @@ flowchart TD
     L --> M[IC-040/041 Profiles and adapters]
     M --> N[IC-042 Backend profile]
     N --> O[IC-050 Deployment reassessment]
-\`\`\`
+```
 
 Tasks within a phase may be split into smaller changes, but a downstream task must not be treated as complete while its prerequisite trust condition remains unresolved.
 
@@ -467,7 +467,7 @@ A task is **not done** merely because:
 
 Work begins with **IC-001**, followed by **IC-002**. Do not modify verifier or Gate behavior until the existing paths and bypasses have been mapped and captured in regression tests.
 
-After IC-002, implement one P0 task at a time, rerunning the relevant regression suite after each change. Keep changes on \`feat/engineering-core\` and do not merge to the default branch without an explicit review decision.
+After IC-002, implement one P0 task at a time, rerunning the relevant regression suite after each change. Keep changes on `feat/engineering-core` and do not merge to the default branch without an explicit review decision.
 
 ## 13. Related documents
 
