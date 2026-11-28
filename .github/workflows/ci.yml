@@ -21,6 +21,7 @@ jobs:
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-python@v5
+
         with:
           python-version: "3.12"
       - name: Validate structure, schemas, links and budgets
