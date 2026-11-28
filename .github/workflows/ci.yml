@@ -19,8 +19,9 @@ jobs:
     env:
       PYTHONDONTWRITEBYTECODE: "1"
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v7
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v5
+
         with:
           python-version: "3.12"
       - name: Validate structure, schemas, links and budgets
@@ -37,8 +38,8 @@ jobs:
     name: Secret scan and dependency review
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v7
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
       - name: Secret and forbidden-file scan
@@ -53,7 +54,7 @@ jobs:
     name: Android sensor
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Detect Android project
         id: detect
         run: |
@@ -73,7 +74,7 @@ jobs:
     name: iOS build
     runs-on: macos-26
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: Detect iOS project
         id: detect
         run: |
