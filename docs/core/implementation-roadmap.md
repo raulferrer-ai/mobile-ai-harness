@@ -51,6 +51,8 @@ Inspect CLI commands, imported functions, scripts, Make targets, hooks, adapter 
 - Direct agent-invocable paths are explicitly identified.
 - The inventory distinguishes enforcement from instruction or convention.
 
+**Status:** Complete — see [IC-001 State Path Inventory](state-path-inventory.md). This is a static inspection; runtime adversarial tests are the next task (IC-002).
+
 ### IC-002 — Establish adversarial regression tests
 
 **Priority:** P0  
