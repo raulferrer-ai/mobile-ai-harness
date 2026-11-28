@@ -74,15 +74,20 @@ class IC002AdversarialPaths(unittest.TestCase):
         self.start_feature()
         code = (
             "import json; from pathlib import Path; "
-            "p=Path('feature_list.json'); d=json.loads(p.read_text()); "
-            "d['features'][0]['title']='written outside CLI'; "
+            "p=Path('feature_list.json'); d=json.loads(p.read_text()); f=d['features'][0]; "
+            "f['platforms']={'ios':'sensor_green','android':'sensor_green'}; "
+            "f['sensors']={'ios':{'at':'forged','mode':'test'},'android':{'at':'forged','mode':'test'}}; "
+            "f['gate']={'passed_at':'forged','sensors':['ios','android'],'degraded':[]}; "
             "p.write_text(json.dumps(d))"
         )
         result = subprocess.run(
             [sys.executable, "-c", code], cwd=self.tmp, capture_output=True, text=True,
         )
         self.assertEqual(result.returncode, 0, result.stderr)
-        self.assertEqual(self.board()["features"][0]["title"], "written outside CLI")
+        feat = self.board()["features"][0]
+        self.assertEqual(feat["platforms"]["ios"], "sensor_green")
+        self.assertEqual(feat["sensors"]["ios"]["at"], "forged")
+        self.assertEqual(feat["gate"]["sensors"], ["ios", "android"])
 
     @unittest.expectedFailure
     def test_gate_rejects_sensor_results_after_spec_snapshot_changes(self):
