@@ -48,7 +48,7 @@ jobs:
       # Pin third-party actions to a commit SHA if your organization requires it.
       - name: Dependency review (pull requests)
         if: github.event_name == 'pull_request'
-        uses: actions/dependency-review-action@v4
+        uses: actions/dependency-review-action@v5
 
   android:
     name: Android sensor
